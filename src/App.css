@@ -1,27 +1,12 @@
-/* svg {
-  transform-origin: center;
-  transform: scaleX(-1);
-}
-
-.path-style {
-  stroke-width: 7px;
-  stroke-linecap: round;
-  /* transform: rotate(90deg); */
-  /* transform-origin: center; */
-  /* transition: 1s linear all;
-  fill-rule: nonzero;
-  stroke: red;
-} */ 
-
-svg {
-  transform: rotate(-90deg);
-}
-
 circle {
   position: absolute;
-  fill: none;
+  fill: none !important;
   stroke-width: 30;
   transition: 1s linear all;
+}
+
+.clock {
+  transform-origin: center;
 }
 
 .seconds {
@@ -43,4 +28,47 @@ circle {
 .month {
   stroke: #2f69bf;
   color: #2f69bf;
+}
+
+text {
+  transform-origin: center;
+  text-anchor: middle;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 40px;
+  visibility: visible;
+}
+
+.white-text {
+  stroke: white;
+  fill: white;
+}
+
+text .seconds {
+  fill: #bf2f2f;
+}
+text .minutes {
+  fill: #bf852f;
+
+}
+text .hours {
+  fill: #a2bf2f;
+}
+text .day {
+  fill: #4cbf2f;
+}
+text .month {
+  fill: #2f69bf;
+}
+
+.blink {
+  animation: blink-animation 2s steps(1) infinite;
+  fill: white;
+  stroke: white;
+  visibility: visible;
+}
+
+@keyframes blink-animation {
+  50% {
+    visibility: hidden;
+  }
 }
