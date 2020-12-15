@@ -9,7 +9,8 @@ const initialState = {
   minutes: '',
   seconds: '',
   date: '',
-  month: ''
+  month: '',
+  twelveHour: ''
 };
 
 function getDay() {
@@ -17,11 +18,12 @@ function getDay() {
 
   const seconds = now.getSeconds();
   const minutes = now.getMinutes();
-  const hours = now.getHours() % 12 || 12;
+  const hours = now.getHours() % 12;
   const date = now.getDate();
   const month = now.getMonth() + 1;
+  const twelveHour = now.getHours() < 12 ? 'AM' : 'PM';
   
-  return [hours, minutes, seconds, date, month];
+  return [hours, minutes, seconds, date, month, twelveHour];
 }
 
 function reducer(state, action) {
@@ -37,9 +39,9 @@ function reducer(state, action) {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const {hours, minutes, seconds, date, month} = state;
+  const {hours, minutes, seconds, date, month, twelveHour} = state;
 
-  const setDate = useCallback((hours, minutes, seconds, date, month) => {
+  const setDate = useCallback((hours, minutes, seconds, date, month, twelveHour) => {
       dispatch({
         type: SET_TIME,
         payload: {
@@ -47,18 +49,23 @@ function App() {
           minutes, 
           seconds,
           date,
-          month
+          month,
+          twelveHour
         }
       })
   }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const [hours, minutes, seconds, date, month] = getDay();
-      setDate(hours, minutes, seconds, date, month);
+      const [hours, minutes, seconds, date, month, twelveHour] = getDay();
+      setDate(hours, minutes, seconds, date, month, twelveHour);
     }, 1000);
     return () => clearInterval(interval);
   }, [setDate]);
+
+  useEffect(() => {
+    console.log(seconds)
+  }, [seconds])
 
   // For reference on stroke-dasharray, I made heavy use of this article.
   // I've used stroke-dasharray previously on quite a few projects but this
@@ -88,15 +95,21 @@ function App() {
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
+            {/* <text x="50%" y="10%" filter="url(#blurMe)"> */}
             <text x="50%" y="10%" filter="url(#blurMe)">
-              <tspan className="hours">{hours}</tspan><tspan className="blink">:</tspan><tspan className="minutes">{minutes < 10 ? `0${minutes}` : minutes}</tspan><tspan className="blink">:</tspan><tspan className="seconds">{seconds < 10 ? `0${seconds}` : seconds}</tspan> <tspan className="white-text">{hours < 12 ? 'AM' : 'PM'}</tspan> <tspan className="blink">|</tspan> <tspan className="day">{date}</tspan><tspan className="blink">/</tspan><tspan className="month">{month}</tspan>
+              <tspan className="hours">{hours}</tspan><tspan className="blink">:</tspan><tspan className="minutes">{minutes < 10 ? `0${minutes}` : minutes}</tspan><tspan className="blink">:</tspan><tspan className="seconds">{seconds < 10 ? `0${seconds}` : seconds}</tspan> <tspan className="white-text">{twelveHour}</tspan> <tspan className="blink">|</tspan> <tspan className="month">{month}</tspan><tspan className="blink">/</tspan><tspan className="day">{date}</tspan>
             </text>
             <g className="clock" style={{transform: "translate(0, 45px)  rotate(-90deg)"}}>
+              
               <circle className="month" cy="50%" cx="50%" r="25" strokeDasharray={`${157 * (month/12) }, 157`} filter="url(#blurMe)"></circle>
+              
               <circle className="day" cy="50%" cx="50%" r="65" strokeDasharray={`${408.4 * (date/31) }, 408.4`} filter="url(#blurMe)"></circle>
+              
               <circle className="hours" cy="50%" cx="50%" r="105" strokeDasharray={`${659.73 * (hours/12) }, 659.73`} filter="url(#blurMe)"></circle>
+              
               <circle className="minutes" cy="50%" cx="50%" r="145" strokeDasharray={`${911.061 * (minutes/60) }, 911.061`} filter="url(#blurMe)"></circle>
-              <circle className="seconds" cy="50%" cx="50%" r="185" strokeDasharray={`${1162.38 * (seconds/60) }, 1162.38`} strokeWidth="30" filter="url(#blurMe)"></circle>    
+
+              <circle className="seconds" cy="50%" cx="50%" r="185" strokeDasharray={`${1162.38 * (seconds/60) }, 1162.38`} strokeWidth="30" filter="url(#blurMe)"></circle> 
             </g>
         </svg>
         )}
