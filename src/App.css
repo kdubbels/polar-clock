@@ -2,7 +2,7 @@ circle {
   position: absolute;
   fill: none !important;
   stroke-width: 30;
-  transition: 1s linear all;
+  transition: 1s ease all;
 }
 
 .clock {

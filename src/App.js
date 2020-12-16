@@ -63,10 +63,6 @@ function App() {
     return () => clearInterval(interval);
   }, [setDate]);
 
-  useEffect(() => {
-    console.log(seconds)
-  }, [seconds])
-
   // For reference on stroke-dasharray, I made heavy use of this article.
   // I've used stroke-dasharray previously on quite a few projects but this
   // finally made it "click". No more guesswork.
@@ -95,7 +91,6 @@ function App() {
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
-            {/* <text x="50%" y="10%" filter="url(#blurMe)"> */}
             <text x="50%" y="10%" filter="url(#blurMe)">
               <tspan className="hours">{hours}</tspan><tspan className="blink">:</tspan><tspan className="minutes">{minutes < 10 ? `0${minutes}` : minutes}</tspan><tspan className="blink">:</tspan><tspan className="seconds">{seconds < 10 ? `0${seconds}` : seconds}</tspan> <tspan className="white-text">{twelveHour}</tspan> <tspan className="blink">|</tspan> <tspan className="month">{month}</tspan><tspan className="blink">/</tspan><tspan className="day">{date}</tspan>
             </text>
@@ -103,7 +98,7 @@ function App() {
               
               <circle className="month" cy="50%" cx="50%" r="25" strokeDasharray={`${157 * (month/12) }, 157`} filter="url(#blurMe)"></circle>
               
-              <circle className="day" cy="50%" cx="50%" r="65" strokeDasharray={`${408.4 * (date/31) }, 408.4`} filter="url(#blurMe)"></circle>
+              <circle className="day" cy="50%" cx="50%" r="65" strokeDasharray={`${408.4 * (month === 4 || month === 6 || month === 9 || month === 11 ? month === 2 ? date/ 28 : date/30 : date/31) }, 408.4`} filter="url(#blurMe)"></circle>
               
               <circle className="hours" cy="50%" cx="50%" r="105" strokeDasharray={`${659.73 * (hours/12) }, 659.73`} filter="url(#blurMe)"></circle>
               
