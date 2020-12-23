@@ -1,16 +1,34 @@
-import {useReducer, useEffect, useCallback} from 'react';
+import {useReducer, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import './index.css';
 
 const SET_TIME = 'SET_TIME';
 
 const initialState = {
-  hours: '',
-  minutes: '',
-  seconds: '',
-  date: '',
-  month: '',
-  twelveHour: ''
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+  date: 0,
+  month: 0,
+  twelveHour: 0
+};
+
+const useInterval = (callback, delay) => {
+  const savedCallback = useRef();
+
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
 };
 
 function getDay() {
@@ -55,13 +73,10 @@ function App() {
       })
   }, [])
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const [hours, minutes, seconds, date, month, twelveHour] = getDay();
-      setDate(hours, minutes, seconds, date, month, twelveHour);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [setDate]);
+  useInterval(() =>{
+    const [hours, minutes, seconds, date, month, twelveHour] = getDay();
+    setDate(hours, minutes, seconds, date, month, twelveHour);
+  }, 1000);
 
   // For reference on stroke-dasharray, I made heavy use of this article.
   // I've used stroke-dasharray previously on quite a few projects but this
@@ -72,7 +87,6 @@ function App() {
   return (
     <div className="App">
       <div>
-      {hours && (
         <svg width="500" height="500" viewBox="0 0 500 500">
           <filter id="blurMe" filterUnits="userSpaceOnUse">
             <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur5"/>
@@ -107,7 +121,6 @@ function App() {
               <circle className="seconds" cy="50%" cx="50%" r="185" strokeDasharray={`${1162.38 * (seconds/60) }, 1162.38`} strokeWidth="30" filter="url(#blurMe)"></circle> 
             </g>
         </svg>
-        )}
       </div>
     </div>
   );
